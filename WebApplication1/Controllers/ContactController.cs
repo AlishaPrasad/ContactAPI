@@ -25,23 +25,23 @@ namespace ContactAPI.Controllers
 
         // POST api/contact
         [HttpPost]
-        public void Post([FromBody]Contact contact)
+        public bool Post([FromBody]Contact contact)
         {
-            contactRepository.AddContact(contact);
+            return contactRepository.AddContact(contact);
         }
 
         // POST api/contact/update
         [HttpPost("{id}")]
-        public void Update([FromBody]Contact contact)
+        public bool Update([FromBody]Contact contact)
         {
-            contactRepository.UpdateContact(contact);
+            return contactRepository.UpdateContact(contact);
         }
 
         // DELETE api/contact/5
         [HttpDelete("{contactId}")]
-        public void Delete(int contactId)
+        public bool Delete(int contactId)
         {
-            contactRepository.DeleteContact(contactId);
+            return contactRepository.DeleteContact(contactId);
         }
     }
 }
