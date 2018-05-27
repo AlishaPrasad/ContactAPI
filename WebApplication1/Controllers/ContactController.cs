@@ -2,46 +2,45 @@
 using ContactAPI.Models;
 using ContactAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ContactAPI.Controllers
 {
     [Route("api/[controller]")]
     public class ContactController : Controller
     {
-        ContactRepository contactRepository = new ContactRepository();
+        IContactRepository _contactRepository;
+
+        public ContactController(IConfiguration Configuration) {
+            _contactRepository = new ContactRepository(Configuration);
+        }
+        
         // GET api/contact
         [HttpGet]
         public IEnumerable<Contact> Get()
         {
-            return contactRepository.GetAllContacts();
+            return _contactRepository.GetAllContacts();
         }
 
         // GET api/contact/5
         [HttpGet("{contactId}")]
         public Contact Get(int contactId)
         {
-            return contactRepository.GetContact(contactId);
+            return _contactRepository.GetContact(contactId);
         }
 
         // POST api/contact
         [HttpPost]
-        public bool Post([FromBody]Contact contact)
-        {
-            return contactRepository.AddContact(contact);
-        }
-
-        // POST api/contact/update
-        [HttpPost("{id}")]
         public bool Update([FromBody]Contact contact)
         {
-            return contactRepository.UpdateContact(contact);
+            return _contactRepository.UpdateContact(contact);
         }
 
         // DELETE api/contact/5
         [HttpDelete("{contactId}")]
         public bool Delete(int contactId)
         {
-            return contactRepository.DeleteContact(contactId);
+            return _contactRepository.DeleteContact(contactId);
         }
     }
 }

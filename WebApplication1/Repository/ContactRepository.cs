@@ -3,23 +3,27 @@ using System.Data;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using ContactAPI.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace ContactAPI.Repository
 {
-    public class ContactRepository
+    public class ContactRepository : IContactRepository
     {
-        string connectionString = "Server=ALISHA-HP\\SQLEXPRESS;Database=Contact;Trusted_Connection=True;MultipleActiveResultSets=true";
-       
-        //To View all Contacts details
+        string _connectionString;
+        public ContactRepository(IConfiguration Configuration) {
+            _connectionString = Configuration["ConnectionStrings:DbConnection"];
+        }
+        
         public IEnumerable<Contact> GetAllContacts()
         {
             try
             {
                 List<Contact> contacts = new List<Contact>();
-                using (SqlConnection con = new SqlConnection(connectionString))
+                using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     SqlCommand cmd = new SqlCommand("spGetAllContacts", con);
                     cmd.CommandType = CommandType.StoredProcedure;
+
                     con.Open();
                     SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
@@ -43,42 +47,15 @@ namespace ContactAPI.Repository
             }
         }
 
-        //To Add new contact record 
-        public bool AddContact(Contact contact)
-        {
-            try
-            {
-                using (SqlConnection con = new SqlConnection(connectionString))
-                {
-                   
-                    SqlCommand cmd = new SqlCommand("spAddContact", con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@FirstName", contact.FirstName);
-                    cmd.Parameters.AddWithValue("@LastName", contact.LastName);
-                    cmd.Parameters.AddWithValue("@Email", contact.Email);
-                    cmd.Parameters.AddWithValue("@PhoneNumber", contact.PhoneNumber);
-                    cmd.Parameters.AddWithValue("@Status", contact.Status);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                }
-                return true;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        //To Update the records of a particluar contact
         public bool UpdateContact(Contact contact)
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
+                using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     SqlCommand cmd = new SqlCommand("spUpdateContact", con);
                     cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@ContactId", contact.ContactId);
                     cmd.Parameters.AddWithValue("@FirstName", contact.FirstName);
                     cmd.Parameters.AddWithValue("@LastName", contact.LastName);
@@ -97,17 +74,17 @@ namespace ContactAPI.Repository
             }
         }
 
-        //Get the details of a particular contact
         public Contact GetContact(int contactId)
         {
             try
             {
                 Contact contact = new Contact();
-                using (SqlConnection con = new SqlConnection(connectionString))
+                using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                    SqlCommand cmd = new SqlCommand("spGetContact", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ContactId", contactId);
+
                     con.Open();
                     SqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
@@ -128,17 +105,17 @@ namespace ContactAPI.Repository
             }
         }
         
-        //To Delete the record on a particular contact
         public bool DeleteContact(int contactId)
         {
             try
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
+                using (SqlConnection con = new SqlConnection(_connectionString))
                 {
 
                    SqlCommand cmd = new SqlCommand("spDeleteContact", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ContactId", contactId);
+
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
