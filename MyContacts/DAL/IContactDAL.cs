@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using ContactAPI.Models;
+using MyContacts.Models;
 
-namespace ContactAPI.Repository {
-    public interface IContactRepository
+namespace MyContacts.DAL
+{
+    public interface IContactDAL
     {
         IEnumerable<Contact> GetAllContacts();
 

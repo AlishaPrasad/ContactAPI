@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
-using ContactAPI.Models;
-using ContactAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using MyContacts.Models;
+using MyContacts.Repository;
 
-namespace ContactAPI.Controllers
+namespace MyContacts.Controllers
 {
     [Route("api/[controller]")]
     public class ContactController : Controller
     {
-        IContactRepository _contactRepository;
+        private readonly IContactRepository _contactRepository;
 
-        public ContactController(IConfiguration Configuration) {
-            _contactRepository = new ContactRepository(Configuration);
+        public ContactController(IContactRepository contactRepository) {
+            _contactRepository = contactRepository;
         }
         
         // GET api/contact

@@ -2,16 +2,21 @@
 using System.Data;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using ContactAPI.Models;
+using MyContacts.Models;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
-namespace ContactAPI.Repository
+namespace MyContacts.DAL
 {
-    public class ContactRepository : IContactRepository
+    public class ContactDAL : IContactDAL
     {
         string _connectionString;
-        public ContactRepository(IConfiguration Configuration) {
+        public ContactDAL(IConfiguration Configuration) {
             _connectionString = Configuration["ConnectionStrings:DbConnection"];
+            if (_connectionString.Contains("AppRootPath"))
+            {
+                _connectionString = _connectionString.Replace("AppRootPath", Directory.GetCurrentDirectory());
+            }
         }
         
         public IEnumerable<Contact> GetAllContacts()

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using MyContacts.DAL;
+using MyContacts.Repository;
 
-namespace WebApplication1
+namespace MyContacts
 {
     public class Startup
     {
@@ -26,6 +22,8 @@ namespace WebApplication1
             services.AddMvc();
             services.AddCors();
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddTransient<IContactRepository, ContactRepository>();
+            services.AddTransient<IContactDAL, ContactDAL>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
